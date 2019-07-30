@@ -1,0 +1,198 @@
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<style>
+  *{
+		text-align: center;
+	}
+
+  h3{
+		text-align: center;
+    font-size: 50px;
+		line-height: 3em;
+		font-family: fantasy;
+		color: #6bf9ee;
+		text-shadow: 3px 3px #383838;
+	}
+	body{
+		background-size: cover;
+		background-attachment: fixed;
+    background: linear-gradient(to right, #ce42f4 0%, #f48642 100%);
+		/* url(圖檔路徑) 座標中心點, auto*/
+		cursor: url(melon.png) 25 25, auto;
+	}
+
+	#start{
+		width: 120px;
+		height: 35px;
+		font-size: 15px;
+		color:#353535;
+		font-weight: bolder;
+		background-color:  rgba(241, 249, 122, 0.8);
+		border: 3px solid #6bf9ee;
+		margin-top: 3%;
+
+	}
+	
+	#score{
+		font-size: 40px;
+		color: #000000;
+		color: #ffffff;
+		text-shadow: 1px 1px #000000;
+		text-align: center;
+
+	}
+  
+	P{
+		font-size: 22px;
+		color: #000000;
+		font-family: fantasy;
+		font-weight: bolder;
+		color: #ffffff;
+		text-shadow: 1px 1px #000000;
+
+	}
+
+	div{
+		vertical-align: middle;
+		position: absolute;
+	  top:20%;
+		left:38%;
+	}
+
+  table tr td {
+		border: solid 1px #f44292;
+  	background-color: rgba(241, 249, 122, 0.8);
+  	height: 150px;
+  	width: 150px;
+		box-shadow: 0.1px 5px 5px #424242;
+  }
+	
+	.red{
+		background-color: rgba(66, 244, 173, 0.8);
+	}
+	.blue{
+		background-image:url(SSS.png);
+	}
+
+	#out{
+    display: table;
+		width: 100%;
+    height: 100%;
+	}
+	#in{
+		display: table;
+		width: 100%;
+    height: 100%;
+		vertical-align: middle;
+	}
+
+</style>
+
+<h3>Ticky Tacky Toes</h3>
+<table style="margin: auto;">
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+<input type="button" value="開始遊戲" id="start">
+<p id="score">0</p>
+<p>剩餘時間: <span id="timeleft">60</span> 秒</p>
+<div id="out"></div>
+<div id="in">
+</div>
+
+
+<script>
+	// 開始按鈕
+	let start = document.getElementById("start");
+	// 分數
+	let score = 0;
+	let scoreText = document.getElementById("score");
+	// 所有td
+	let tds = document.getElementsByTagName("td");
+	// 每秒換格子的計時器
+	let timer = 0;
+	// 遊戲時間計時器
+	let gameTimer = 0;
+	// 剩餘時間文字
+	let timeleft = document.getElementById("timeleft");
+	// 遊戲時間
+	let time = 60;
+
+	// 當點擊開始按鈕時
+	start.onclick = function(){
+		// 執行計時器
+		timer = setInterval(game, 1000);
+		// 立刻換格子
+		game();
+		// 將開始按鈕停用
+		start.setAttribute("disabled", "true");
+		// 開始倒數遊戲時間
+		gameTimer = setInterval(gametime, 1000);
+		gametime();
+	}
+
+	// 時間
+	function gametime(){
+		time--;
+		timeleft.innerText = time;
+		if(time == 0){
+			// 停止遊戲倒數
+			clearInterval(gameTimer);
+			// 停止換格子
+			clearInterval(timer);
+			setTimeout(function(){
+				alert(`時間到，你獲得了${score}分`);
+				time = 60;
+				score = 0;
+				// 將開始按鈕啟用
+				start.removeAttribute("disabled");
+				// 改回時間文字
+				timeleft.innerText = 60;
+				// 改回分數文字
+				scoreText.innerText = 0;
+			}, 100);
+
+			// 重置所有格子
+			for(let i=0;i<tds.length;i++){
+				tds[i].classList.remove("red");
+				tds[i].classList.remove("blue");
+			}
+		}
+	}
+   
+	// 換格子
+	function game(){
+		for(let i=0;i<tds.length;i++){
+			tds[i].classList.remove("red");
+			tds[i].classList.remove("blue");
+		}
+		for(let i=0;i<3;i++){
+			let rand = Math.floor( Math.random()*9 );
+			tds[rand].classList.add("red");
+		}
+	}
+	
+	// 點格子時
+	for(let i=0;i<tds.length;i++){
+		tds[i].onclick = function(){
+			if( this.classList.contains("red") ){
+				this.classList.remove("red");
+				this.classList.add("blue");
+				score++;
+				scoreText.innerText = score;
+			}
+		}
+	}
+</script>
